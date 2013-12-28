@@ -890,5 +890,6 @@ ifneq ($(CUSTOM_BUILD),)
 ## last, to avoid accidental resetting by device configs
 $(eval include vendor/pure/sepolicy/sepolicy.mk)
 endif
-
+# Rules for QCOM targets
+include $(BUILD_SYSTEM)/qcom_target.mk
 include $(BUILD_SYSTEM)/dumpvar.mk
