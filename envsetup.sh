@@ -23,6 +23,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - aospremote: Add git remote for matching Googles repository.
 - pfremote: Add gerrit remote for matching PureFusionsOS repository.
 - mka:       Builds using SCHED_BATCH on all processors
+- repolastsync: Prints date and time of last repo sync.
 - reposync:  Parallel repo sync using ionice and SCHED_BATCH
 
 Environment options:
@@ -1726,6 +1727,13 @@ function reposync() {
             schedtool -B -n 1 -e ionice -n 1 `which repo` sync -j 4 "$@"
             ;;
     esac
+}
+
+function repolastsync() {
+    RLSPATH="$ANDROID_BUILD_TOP/.repo/.repo_fetchtimes.json"
+    RLSLOCAL=$(date -d "$(stat -c %z $RLSPATH)" +"%e %b %Y, %T %Z")
+    RLSUTC=$(date -d "$(stat -c %z $RLSPATH)" -u +"%e %b %Y, %T %Z")
+    echo "Last repo sync: $RLSLOCAL / $RLSUTC"
 }
 
 # Force JAVA_HOME to point to java 1.7/1.8 if it isn't already set.
