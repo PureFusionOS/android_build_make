@@ -22,6 +22,9 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - godir:     Go to the directory containing a file.
 - mka:       Builds using SCHED_BATCH on all processors
 - reposync:  Parallel repo sync using ionice and SCHED_BATCH
+- losremote: Add git remote for matching LOS repository.
+- pfremote: Add gerrit remote for matching PureFusionsOS repository.
+
 
 Environment options:
 - SANITIZE_HOST: Set to 'true' to use ASAN for all host modules. Note that
@@ -163,6 +166,44 @@ function check_variant()
     return 1
 }
 
+function losremote()
+{
+    git remote rm cm 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
+    PFX="android_$(echo $PROJECT | sed 's/\//_/g')"
+    git remote add cm git@github.com:LineageOS/$PFX
+    echo "Remote 'cm' created"
+}
+
+
+function pfremote()
+{
+    git remote rm pfremote 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    GERRIT_REMOTE=$(cat .git/config  | grep git://github.com | awk '{ print $NF }' | sed s#git://github.com/##g)
+    if [ -z "$GERRIT_REMOTE" ]
+    then
+        echo Unable to set up the git remote, are you in the root of the repo?
+        return 0
+    fi
+    PFUSER=`git config --get review.review.purefusionos.com.username`
+    if [ -z "$CRUSER" ]
+    then
+        git remote add pfremote ssh://review.purefusionos.com:29418/$GERRIT_REMOTE
+    else
+        git remote add pfremote ssh://$PFUSER@review.purefusionos.com:29418/$GERRIT_REMOTE
+    fi
+    echo You can now push to "pfremote".
+ }
+
+
 function setpaths()
 {
     local T=$(gettop)
@@ -302,6 +343,12 @@ function printconfig()
         return
     fi
     get_build_var report_config
+}
+
+function repopick() {
+    set_stuff_for_environment
+    T=$(gettop)
+    $T/build/tools/repopick.py $@
 }
 
 function set_stuff_for_environment()
@@ -612,6 +659,20 @@ function lunch()
     fi
 
     if [ -z "$product" ]
+    then
+       # if we can't find the product, try to grab it from our github
+      T=$(gettop)
+      pushd $T > /dev/null
+      build/tools/roomservice.py $variant
+      popd > /dev/null
+      check_variant $variant
+    else
+      T=$(gettop)
+      pushd $T > /dev/null
+      build/tools/roomservice.py $variant true
+      popd > /dev/null
+    fi
+    if [ $? -ne 0 ]
     then
         echo
         echo "Invalid lunch combo: $selection"
