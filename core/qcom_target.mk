@@ -39,6 +39,7 @@ ifeq ($(BOARD_USES_QTI_HARDWARE),true)
     # UM platforms no longer need this set on O+
     ifneq ($(call is-board-platform-in-list, $(UM_3_18_FAMILY) $(UM_4_4_FAMILY)),true)
         TARGET_USES_QCOM_BSP := true
+	BOARD_USES_ADRENO := true
     endif
 
     # Tell HALs that we're compiling an AOSP build with an in-line kernel
