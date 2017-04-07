@@ -129,6 +129,7 @@ PRODUCT_PACKAGES += \
     settings \
     sgdisk \
     sm \
+    Stk \
     svc \
     tc \
     telecom \
