@@ -641,6 +641,21 @@ add_lunch_combo aosp_x86_64-eng
 
 function print_lunch_menu()
 {
+
+     echo -e "\033[01;36m"
+    echo -e "                The"
+    echo -e ""
+    echo -e "                                                                       "
+    echo -e " ________                   __________             _____               "
+    echo -e " ___  __ \___  ________________  ____/___  ___________(_)____________  "
+    echo -e " __  /_/ /  / / /_  ___/  _ \_  /_   _  / / /_  ___/_  /_  __ \_  __ \ "
+    echo -e " _  ____// /_/ /_  /   /  __/  __/   / /_/ /_(__  )_  / / /_/ /  / / / "
+    echo -e " /_/     \__,_/ /_/    \___//_/      \__,_/ /____/ /_/  \____//_/ /_/  "
+    echo -e "                                                                       "
+    echo -e ""
+    echo -e "                                                        Project"
+    echo -e "\033[0m"
+
     local uname=$(uname)
     echo
     echo "You're building on" $uname
