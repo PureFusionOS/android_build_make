@@ -93,4 +93,8 @@ FRAMEWORKS_BASE_SUBDIRS := \
 # figure out a better way to do this.
 #
 FRAMEWORKS_BASE_JAVA_SRC_DIRS := \
-	$(addprefix frameworks/base/,$(FRAMEWORKS_BASE_SUBDIRS))
+        $(addprefix frameworks/base/,$(FRAMEWORKS_BASE_SUBDIRS))
+
+        ifneq ($(CUSTOM_BUILD),)
+        -include $(TOPDIR)vendor/pure/build/core/pathmap.mk
+        endif
