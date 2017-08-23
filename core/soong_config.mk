@@ -70,12 +70,14 @@ $(SOONG_VARIABLES): FORCE pure_soong
 	echo ''; \
 	echo '    "ArtUseReadBarrier": $(if $(filter false,$(PRODUCT_ART_USE_READ_BARRIER)),false,true),'; \
 	echo ''; \
+	echo '    "ForcedShimLibs": "$(LINKER_FORCED_SHIM_LIBS)",'; \
 	echo '    "BtConfigIncludeDir": "$(BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR)",'; \
 	echo ''; \
 	echo '    "BoardUsesQTIHardware":  $(if $(BOARD_USES_QTI_HARDWARE),true,false),'; \
 	echo '    "QTIAudioPath":  "$(call project-path-for,qcom-audio)",'; \
 	echo '    "QTIDisplayPath":  "$(call project-path-for,qcom-display)",'; \
 	echo '    "QTIMediaPath":  "$(call project-path-for,qcom-media)"';  \
+
 	echo '}') >> $(SOONG_VARIABLES_TMP); \
 	if ! cmp -s $(SOONG_VARIABLES_TMP) $(SOONG_VARIABLES); then \
 	  mv $(SOONG_VARIABLES_TMP) $(SOONG_VARIABLES); \
