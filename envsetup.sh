@@ -1733,6 +1733,7 @@ function get_make_command()
 
 function _wrap_build()
 {
+    export TARGET_DEVICE_DIR="$(find device/ -maxdepth 2 -name ${TARGET_PRODUCT/aosp_/} -type d)"
     local start_time=$(date +"%s")
     "$@"
     local ret=$?
