@@ -1714,6 +1714,7 @@ function get_make_command()
 
 function make()
 {
+    export TARGET_DEVICE_DIR="$(find device/ -maxdepth 2 -name ${TARGET_PRODUCT/aosp_/} -type d)"
     local start_time=$(date +"%s")
     $(get_make_command) "$@"
     local ret=$?
