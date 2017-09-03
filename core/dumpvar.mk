@@ -13,8 +13,6 @@ print_build_config_vars := \
   TARGET_ARCH_VARIANT \
   TARGET_CPU_VARIANT \
   TARGET_2ND_ARCH \
-  TARGET_2ND_ARCH_VARIANT \
-  TARGET_2ND_CPU_VARIANT \
   HOST_ARCH \
   HOST_2ND_ARCH \
   HOST_OS \
@@ -24,8 +22,17 @@ print_build_config_vars := \
   HOST_CROSS_2ND_ARCH \
   HOST_BUILD_TYPE \
   BUILD_ID \
-  OUT_DIR \
-  AUX_OS_VARIANT_LIST
+  OUT_DIR
+
+ifneq ($(TARGET_2ND_ARCH_VARIANT),)
+print_build_config_vars += \
+  TARGET_2ND_ARCH_VARIANT
+endif
+
+ifneq ($(TARGET_2ND_CPU_VARIANT),)
+print_build_config_vars += \
+  TARGET_2ND_CPU_VARIANT
+endif
 
 ifeq ($(TARGET_BUILD_PDK),true)
 print_build_config_vars += \
