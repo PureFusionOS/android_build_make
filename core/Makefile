@@ -1258,6 +1258,9 @@ endef
 
 # $(1): output file
 define build-recoveryimage-target
+  @echo -e ${CL_CYN}"----- Generating changelog ------"${CL_RST}
+  $(hide) ./vendor/pure/tools/changelog
+  $(hide) mv $(PRODUCT_OUT)/Changelog.txt $(PRODUCT_OUT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION)_changelog.txt
   @echo -e ${CL_CYN}"----- Making recovery image ------"${CL_RST}
   $(hide) mkdir -p $(TARGET_RECOVERY_OUT)
   $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/etc $(TARGET_RECOVERY_ROOT_OUT)/sdcard $(TARGET_RECOVERY_ROOT_OUT)/tmp
@@ -2770,8 +2773,6 @@ bacon: pure
 pure: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CUSTOM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CUSTOM_TARGET_PACKAGE) > $(CUSTOM_TARGET_PACKAGE).md5sum
-	$(hide) ./vendor/pure/tools/changelog
-	$(hide) mv $(PRODUCT_OUT)/Changelog.txt $(PRODUCT_OUT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION)_changelog.txt
 	$(hide) ./vendor/pure/tools/pf.sh
 	@echo ""
 	@echo -e ${CL_CYN}"══════════════════════════════════════════════════════════════════════════════════════════════════════════"${CL_RST}
