@@ -51,12 +51,10 @@ gerrit_url = "review.purefusionos.com"
 
 
 def check_repo_exists(git_data, device):
-    re_match = "^android_device_.*_{device}$".format(device=device)
+    re_match = "^FusionDevices/android_device_.*_{device}$".format(device=device)
     matches = filter(lambda x: re.match(re_match, x), git_data)
     if len(matches) != 1:
-        raise Exception("{device} not found,"
-                        "exiting roomservice".format(device=device))
-
+        raise Exception("{device} not found, exiting roomservice".format(device=device))
     return git_data[matches[0]]
 
 
@@ -79,12 +77,12 @@ def search_gerrit_for_device(device):
         response.readline()
         git_data = json.load(response)
         device_data = check_repo_exists(git_data, device)
-        print("found the {} device repo".format(device))
+        print("Found the {} device repo".format(device))
         return device_data
 
 
 def parse_device_directory(device_url, device):
-    pattern = "^android_device_(?P<vendor>.+)_{}$".format(device)
+    pattern = "^FusionDevices/android_device_(?P<vendor>.+)_{}$".format(device)
     match = re.match(pattern, device_url)
 
     if match is None:
@@ -178,7 +176,7 @@ def write_to_manifest(manifest):
 
     with open('/'.join([local_manifest_dir, "roomservice.xml"]), 'w') as f:
         f.write(raw_xml)
-    print("wrote the new roomservice manifest")
+    print("Wrote the new roomservice manifest")
 
 
 def parse_device_from_manifest(device):
@@ -195,8 +193,8 @@ def parse_device_from_folder(device):
         if os.path.isdir("device/%s/%s" % (sub_folder, device)):
             search.append("device/%s/%s" % (sub_folder, device))
     if len(search) > 1:
-        print("multiple devices under the name %s. "
-              "defaulting to checking the manifest" % device)
+        print("Multiple devices under the name %s. "
+              "Defaulting to checking the manifest" % device)
         location = parse_device_from_manifest(device)
     elif len(search) == 1:
         location = search[0]
@@ -215,8 +213,9 @@ def parse_dependency_file(location):
     try:
         with open(dep_location, 'r') as f:
             dependencies = json.loads(f.read())
+            print("Successfully loaded from dependency file")
     except ValueError:
-        raise Exception("ERROR: malformed dependency file")
+        raise Exception("ERROR: Malformed dependency file")
     return dependencies
 
 # if there is any conflict with existing and new
@@ -232,7 +231,7 @@ def check_manifest_problems(dependencies):
         for project in iterate_manifests():
             if project.get("revision") is not None and project.get("path") is not None:
                 if project.get("path") == target_path and project.get("revision") != revision:
-                    print("WARNING: detected conflict in revisions for repository ", repository)
+                    print("WARNING: Detected conflict in revisions for repository ", repository)
                     current_dependency = str(project.get(repository))
                     file = ES.parse('/'.join([local_manifest_dir, "roomservice.xml"]))
                     file_root = file.getroot()
@@ -287,7 +286,7 @@ def create_common_dependencies_manifest(dependencies):
                         with open(dep_location, 'r') as f:
                             common_deps = json.loads(f.read())
                     except ValueError:
-                        raise Exception("ERROR: malformed dependency file")
+                        raise Exception("ERROR: Malformed dependency file")
 
                     if common_deps is not None:
                         print("Looking for dependencies on: ",
@@ -300,7 +299,7 @@ def create_common_dependencies_manifest(dependencies):
 def fetch_dependencies(device):
     location = parse_device_from_folder(device)
     if location is None or not os.path.isdir(location):
-        raise Exception("ERROR: could not find your device "
+        raise Exception("ERROR: Could not find your device "
                         "folder location, bailing out")
     dependencies = parse_dependency_file(location)
     check_manifest_problems(dependencies)
@@ -321,6 +320,7 @@ def fetch_device(device):
     git_data = search_gerrit_for_device(device)
     if git_data is not None:
         device_url = git_data['id']
+        device_url = urllib2.unquote(device_url)
         device_dir = parse_device_directory(device_url, device)
         project = create_manifest_project(device_url,
                                       device_dir,
@@ -330,7 +330,7 @@ def fetch_device(device):
             write_to_manifest(manifest)
         # In case a project was written to manifest, but never synced
         if project is not None or not check_target_exists(device_dir):
-            print("syncing the device config")
+            print("Syncing the device config")
             os.system('repo sync --force-sync -f --no-clone-bundle %s' % device_dir)
 
 
