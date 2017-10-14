@@ -564,7 +564,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
   recovery_mount_options = OPTIONS.info_dict.get("recovery_mount_options")
-
+  device_specific.FullOTA_CustomAsserts()
   script.ShowProgress(system_progress, 0)
 
   # Full OTA is done as an "incremental" against an empty source image. This
