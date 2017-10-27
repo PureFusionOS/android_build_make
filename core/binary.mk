@@ -442,6 +442,11 @@ ifdef LOCAL_IS_HOST_MODULE
     endif
 endif
 
+# Include PureFusionTC Optimizations
+ifneq ($(DISABLE_PFTC_OPTS),true)
+  include $(BUILD_SYSTEM)/purefusiontc.mk
+endif
+
 my_c_std_conlyflags :=
 my_cpp_std_cppflags :=
 ifneq (,$(my_c_std_version))
