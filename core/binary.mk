@@ -450,6 +450,11 @@ ifneq (,$(my_cpp_std_version))
    my_cpp_std_cppflags := -std=$(my_cpp_std_version)
 endif
 
+# Include PureFusionTC Optimizations
+ifneq ($(DISABLE_PFTC_OPTS),true)
+  include $(BUILD_SYSTEM)/purefusiontc.mk
+endif
+
 ifeq ($(SDCLANG),true)
     ifeq ($(my_sdclang),)
         ifeq ($(TARGET_USE_SDCLANG),true)
