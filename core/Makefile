@@ -2581,7 +2581,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
 
 CUSTOM_TARGET_PACKAGE := $(PRODUCT_OUT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION).zip
 
-ZIP_LOCATION := /out/target/product/$(TARGET_PRODUCT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION).zip
+# ZIP_LOCATION := /out/target/product/$(TARGET_PRODUCT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION).zip
 
 .PHONY: otapackage bacon pure
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
@@ -2590,10 +2590,12 @@ pure: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CUSTOM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CUSTOM_TARGET_PACKAGE) > $(CUSTOM_TARGET_PACKAGE).md5sum
 	$(hide) ./vendor/pure/tools/pf.sh
-	@echo -e ${CL_CYN}"ZIP: $(ZIP_LOCATION)"${CL_RST}
-	@echo -e ${CL_CYN}"SIZE: "`ls -hal $(CUSTOM_TARGET_PACKAGE) | cut -d ' ' -f 5`${CL_RST}
-	@echo -e ${CL_CYN}"MD5: "`cat $(CUSTOM_TARGET_PACKAGE).md5sum | cut -d ' ' -f 1`${CL_RST}
-	@echo -e ${CL_RST}
+	@echo ""
+	@echo -e ${CL_CYN}"══════════════════════════════════════════════════════════════════════════════════════════════════════════"${CL_RST}
+	@echo -e ${CL_CYN}"Package zip: "${CL_MAG} $(CUSTOM_TARGET_PACKAGE)                                 ${CL_RST}
+	@echo -e ${CL_CYN}"Package md5: "${CL_MAG}" `cat $(CUSTOM_TARGET_PACKAGE).md5sum | cut -d ' ' -f 1`"${CL_RST}
+	@echo -e ${CL_CYN}"Package size:"${CL_MAG}" `du -h $(CUSTOM_TARGET_PACKAGE) | cut -f 1`            "${CL_RST}
+	@echo -e ${CL_CYN}"══════════════════════════════════════════════════════════════════════════════════════════════════════════"${CL_RST}
 
 endif    # build_ota_package
 
