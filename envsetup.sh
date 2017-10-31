@@ -1646,7 +1646,7 @@ function mka() {
             make -j `sysctl hw.ncpu|cut -d" " -f2` "$@"
             ;;
         *)
-            schedtool -B -n 1 -e ionice -n 1 make -j$(cat /proc/cpuinfo | grep "^processor" | wc -l) "$@"
+            mk_timer schedtool -B -n 1 -e ionice -n 1 make -j$(cat /proc/cpuinfo | grep "^processor" | wc -l) "$@"
             ;;
     esac
 }
@@ -1731,11 +1731,11 @@ function get_make_command()
     fi
 }
 
-function _wrap_build()
+function mk_timer()
 {
     export TARGET_DEVICE_DIR="$(find device/ -maxdepth 2 -name ${TARGET_PRODUCT/aosp_/} -type d)"
     local start_time=$(date +"%s")
-    "$@"
+    $@
     local ret=$?
     local end_time=$(date +"%s")
     local tdiff=$(($end_time-$start_time))
@@ -1754,9 +1754,9 @@ function _wrap_build()
     fi
     echo
     if [ $ret -eq 0 ] ; then
-        echo -n "${color_success}#### build completed successfully "
+        printf "${color_success}#### build completed successfully "
     else
-        echo -n "${color_failed}#### failed to build some targets "
+        printf "${color_failed}#### build failed to build some targets "
     fi
     if [ $hours -gt 0 ] ; then
         printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
@@ -1765,14 +1765,14 @@ function _wrap_build()
     elif [ $secs -gt 0 ] ; then
         printf "(%s seconds)" $secs
     fi
-    echo " ####${color_reset}"
-    echo
+    printf " ####${color_reset}\n\n"
     return $ret
 }
 
 function make()
 {
-    _wrap_build $(get_make_command) "$@"
+    mk_timer $(get_make_command) "$@"
+
 }
 
 function provision()
@@ -1802,6 +1802,9 @@ function provision()
         fi
     fi
     "$ANDROID_PRODUCT_OUT/provision-device" "$@"
+    echo " ####${color_reset}"
+    echo
+    return $ret
 }
 
 if [ "x$SHELL" != "x/bin/bash" ]; then
