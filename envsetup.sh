@@ -21,6 +21,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - sgrep:     Greps on all local source files.
 - godir:     Go to the directory containing a file.
 - aospremote: Add git remote for matching Googles repository.
+- pfremote: Add gerrit remote for matching PureFusionsOS repository.
 - mka:       Builds using SCHED_BATCH on all processors
 - reposync:  Parallel repo sync using ionice and SCHED_BATCH
 
@@ -162,6 +163,31 @@ function check_variant()
         fi
     done
     return 1
+}
+
+function pfremote()
+{
+    git remote rm pfremote 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    GERRIT_REMOTE=$(cat .git/config  | grep git://github.com | awk '{ print $NF }' | sed s#git://github.com/##g)
+    if [ -z "$GERRIT_REMOTE" ]
+    then
+        echo Unable to set up the git remote, are you in the root of the repo?
+        return 0
+    fi
+    PFUSER=`git config --get review.review.purefusionos.com.username`
+    if [ -z "$PFUSER" ]
+    then
+        git remote add pfremote ssh://review.purefusionos.com:29418/$GERRIT_REMOTE
+    else
+        git remote add pfremote ssh://$PFUSER@review.purefusionos.com:29418/$GERRIT_REMOTE
+    fi
+    echo You can now push to "pfremote".
+ }
+
 function aospremote()
 {
     git remote rm aosp 2> /dev/null
@@ -185,7 +211,6 @@ function aospremote()
     fi
     git remote add aosp https://android.googlesource.com/$PFX$PROJECT
     echo "Remote 'aosp' created"
-}
 }
 
 function setpaths()
