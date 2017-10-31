@@ -20,6 +20,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - sepgrep:   Greps on all local sepolicy files.
 - sgrep:     Greps on all local source files.
 - godir:     Go to the directory containing a file.
+- aospremote: Add git remote for matching Googles repository.
 - mka:       Builds using SCHED_BATCH on all processors
 - reposync:  Parallel repo sync using ionice and SCHED_BATCH
 
@@ -161,6 +162,30 @@ function check_variant()
         fi
     done
     return 1
+function aospremote()
+{
+    git remote rm aosp 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
+    # Google moved the repo location in Oreo
+    if [ $PROJECT = "build/make" ]
+    then
+        PROJECT="build"
+    fi
+    if [ $PROJECT = "hardware/qcom/audio/default" ]
+    then
+        PROJECT="hardware/qcom/audio"
+    fi
+    if (echo $PROJECT | grep -qv "^device")
+    then
+        PFX="platform/"
+    fi
+    git remote add aosp https://android.googlesource.com/$PFX$PROJECT
+    echo "Remote 'aosp' created"
+}
 }
 
 function setpaths()
