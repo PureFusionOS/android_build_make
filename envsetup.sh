@@ -1918,3 +1918,8 @@ unset f
 addcompletions
 
 export ANDROID_BUILD_TOP=$(gettop)
+
+# Export TC paths for About phone section
+export LLVM_PREBUILTS_VERSION=$(get_build_var LLVM_PREBUILTS_VERSION)
+export TARGET_GCC_VERSION=$(get_build_var TARGET_GCC_VERSION)
+export TARGET_ARCH=$(get_build_var TARGET_ARCH)
