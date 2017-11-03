@@ -534,7 +534,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print(" ")
   script.AppendExtra("sleep (3);")
 
-  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
   CopyInstallTools(output_zip)
