@@ -2590,6 +2590,8 @@ bacon: pure
 pure: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CUSTOM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CUSTOM_TARGET_PACKAGE) > $(CUSTOM_TARGET_PACKAGE).md5sum
+	$(hide) ./vendor/pure/tools/changelog
+	$(hide) mv $(PRODUCT_OUT)/Changelog.txt $(PRODUCT_OUT)/purefusion_$(TARGET_PRODUCT)-$(PURE_VERSION)_changelog.txt
 	$(hide) ./vendor/pure/tools/pf.sh
 	@echo ""
 	@echo -e ${CL_CYN}"══════════════════════════════════════════════════════════════════════════════════════════════════════════"${CL_RST}
