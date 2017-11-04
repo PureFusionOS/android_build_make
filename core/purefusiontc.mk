@@ -22,14 +22,14 @@
 # Set Bluetooth Modules
 BLUETOOTH := libbluetooth_jni bluetooth.mapsapi bluetooth.default bluetooth.mapsapi libbt-brcm_stack audio.a2dp.default libbt-brcm_gki libbt-utils libbt-qcom_sbc_decoder \
                 libbt-brcm_bta libbt-brcm_stack libbt-vendor libbtprofile libbtdevice libbtcore bdt bdtest libbt-hci libosi ositests libbluetooth_jni net_test_osi net_test_device \
-                net_test_btcore net_bdtool net_hci bdAddrLoader
+                net_test_btcore net_bdtool net_hci bdAddrLoader 
 
 # PureFusionOS module disable
 DISABLE_FUSION_arm :=
 DISABLE_FUSION_arm64 := libm libdng_sdk libdng% libjni_filtershow_filters busybox libfdlibm libhistory% sensorservice libwfds libsensorservice  \
                         libv8base libhevcdec libjni_eglfence% libjni_jpegstream% libjni_gallery_filters% libLLVMAArch64CodeGen libLLVMAnalysis \
                         librsjni libblasV8 libF77blasV8 libF77blas libRSSupport% libclcore libLLVMCodeGen libbnnmlowpV8 libLLVMARMCodeGen libLLVM% \
-                        libplatformprotos
+                        libplatformprotos toybox libcxx libjni_latinime libjni_latinime_common_static libjni_snapcammosaic
 
 # Set DISABLE_FUSION based on arch
 DISABLE_FUSION := \
@@ -170,9 +170,9 @@ my_conlyflags := $(filter-out -Wall -Werror -g -Wextra -Weverything $(O_FLAGS),$
 
 ifndef LOCAL_IS_HOST_MODULE
   ifeq (,$(filter true,$(my_clang)))
-    my_cflags += -fipa-pta
+#    my_cflags += -fipa-pta
   else
-    my_cflags += -analyze -analyzer-purge
+#    my_cflags += -analyze -analyzer-purge
   endif
 endif
 
@@ -189,12 +189,16 @@ LOCAL_DISABLE_OPENMP := \
 	libF77blasV8 \
 	libjni_latinime \
 	libyuv_static \
+	libdivsufsort64 \
+	libdivsufsort \
+	libjni_snapcammosaic \
+	toybox \
 	mdnsd
 
 ifndef LOCAL_IS_HOST_MODULE
   ifneq (1,$(words $(filter $(LOCAL_DISABLE_OPENMP),$(LOCAL_MODULE))))
-    my_cflags += -lgomp -lgcc -fopenmp
-    my_ldflags += -fopenmp
+#    my_cflags += -lgomp -lgcc -fopenmp
+#    my_ldflags += -fopenmp
   endif
 endif
 
@@ -275,6 +279,7 @@ DISABLE_POLLY_arm64 := \
 	  libscrypt_static \
 	  libmpeg2dec \
 	  libcrypto_static \
+	  libjni_latinime \
 	  libcrypto \
 	  libyuv% \
 	  libjni_gallery_filters% \
@@ -289,18 +294,18 @@ DISABLE_POLLY := \
 
 # Set POLLY based on DISABLE_POLLY
 ifeq (1,$(words $(filter $(DISABLE_POLLY),$(LOCAL_MODULE))))
-  POLLY := -O3
+#  POLLY := -O3
 endif
 
 # Set POLLY based on BLUETOOTH
 ifeq (1,$(words $(filter $(BLUETOOTH),$(LOCAL_MODULE))))
-  POLLY := -Os
+#  POLLY := -Os
 endif
 
 # Set POLLY based on DISABLE_POLLY
 ifeq ($(my_32_64_bit_suffix),32)
   ifeq (1,$(words $(filter $(DISABLE_POLLY_arm64_32),$(LOCAL_MODULE))))
-    POLLY := -O3
+#    POLLY := -O3
   endif
 endif
 
@@ -308,17 +313,17 @@ ifeq ($(my_clang),true)
   ifndef LOCAL_IS_HOST_MODULE
     # Possible conflicting flags will be filtered out to reduce argument
     # size and to prevent issues with locally set optimizations.
-    my_cflags := $(filter-out -Wall -Werror -g -O3 -O2 -Os -O1 -O0 -Og -Oz -Wextra -Weverything,$(my_cflags))
+#    my_cflags := $(filter-out -Wall -Werror -g -O3 -O2 -Os -O1 -O0 -Og -Oz -Wextra -Weverything,$(my_cflags))
     # Enable -O3 and Polly if not blacklisted, otherwise use -Os.
-    my_cflags += $(POLLY) -Qunused-arguments -Wno-unknown-warning-option -w -fuse-ld=gold
-    my_ldflags += -fuse-ld=gold
+#    my_cflags += $(POLLY) -Qunused-arguments -Wno-unknown-warning-option -w -fuse-ld=gold
+#    my_ldflags += -fuse-ld=gold
   endif
 endif
 
 ifneq (1,$(words $(filter $(DISABLE_POLLY_O3),$(LOCAL_MODULE))))
   # Remove all other "O" flags to set O3
-  my_cflags := $(filter-out -O3 -O2 -Os -O1 -O0 -Og -Oz,$(my_cflags))
-  my_cflags += -O3
+#  my_cflags := $(filter-out -O3 -O2 -Os -O1 -O0 -Og -Oz,$(my_cflags))
+#  my_cflags += -O3
 else
   my_cflags += -O2
 endif
@@ -330,7 +335,7 @@ ifeq ($(my_sdclang), true)
     ifneq (1,$(words $(filter $(LOCAL_DISABLE_POLLY),$(LOCAL_MODULE))))
       # Enable POLLY only on clang
       ifneq ($(LOCAL_CLANG),false)
-        my_cflags += $(POLLY)
+ #       my_cflags += $(POLLY)
         my_cflags += -Qunused-arguments
       endif
     endif
