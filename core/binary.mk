@@ -132,12 +132,6 @@ ifneq ($(LOCAL_SDK_VERSION),)
     my_ndk_hist_api := 24
   endif
 
-
-  # Traditionally this has come from android/api-level.h, but with the libc
-  # headers unified it must be set by the build system since we don't have
-  # per-API level copies of that header now.
-  my_cflags += -D__ANDROID_API__=$(my_ndk_api_def)
-
   my_ndk_source_root := \
       $(HISTORICAL_NDK_VERSIONS_ROOT)/$(LOCAL_NDK_VERSION)/sources
   my_ndk_sysroot := \
