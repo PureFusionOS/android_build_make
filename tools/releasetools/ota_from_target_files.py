@@ -512,9 +512,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     # Stage 3/3: Make changes.
     script.Comment("Stage 3/3")
 
-
-  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
-
   #Print ASCII
 ## Acsii Art/Text has a Max width of 53 chars ##
 ##             "12345678901234567890123456789012345678901234567890123"; Max Width##
@@ -534,6 +531,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print(" ")
   script.AppendExtra("sleep (3);")
 
+  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
   CopyInstallTools(output_zip)
@@ -592,7 +590,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Print(" LCD density: %s"%(density));
     script.Print("");
     script.Print(" *******************************************");
-  
+
   if OPTIONS.wipe_user_data:
     system_progress -= 0.1
   if HasVendorPartition(input_zip):
@@ -627,25 +625,23 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     vendor_diff = common.BlockDifference("vendor", vendor_tgt)
     vendor_diff.WriteScript(script, output_zip)
 
+  script.Print(" ")
+  script.Print("Flashing Kernel..")
+  common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
+  common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
+
+  device_specific.FullOTA_PostValidate()
+
   if OPTIONS.backuptool:
+    script.ShowProgress(0.02, 10)
     script.Mount("/system")
     script.RunBackup("restore")
     script.Unmount("/system")
 
-  common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
-  common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
-  
-  device_specific.FullOTA_PostValidate()
-  
-  script.Print(" ")
-  script.Print("Flashing Kernel..")
-  script.ShowProgress(0.2, 10)
-  script.Print("Flashing boot.img")
-  bootpartition = "/boot" if OPTIONS.override_boot_partition == "" else OPTIONS.override_boot_partition
-  script.WriteRawImage(bootpartition, "boot.img")
+  script.ShowProgress(0.05, 5)
+  script.WriteRawImage("/boot", "boot.img")
 
-  script.ShowProgress(0.1, 0)
-  script.Print("Enjoy PixelDust Goodness!");
+  script.ShowProgress(0.2, 10)
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
