@@ -262,6 +262,7 @@ function setpaths()
     export ANDROID_TOOLCHAIN=
     export ANDROID_TOOLCHAIN_2ND_ARCH=
     local ARCH=$(get_build_var TARGET_ARCH)
+    export TARGET_ARCH=$(get_build_var TARGET_ARCH)
     local toolchaindir toolchaindir2=
     case $ARCH in
         x86) toolchaindir=x86/x86_64-linux-android-$targetgccversion/bin
@@ -1942,5 +1943,5 @@ do
             export SDCLANG_LTO_DEFS=vendor/pure/sdclang/sdllvm-lto-defs.mk
             export SDCLANG_COMMON_FLAGS="-O3 -fvectorize-loops"
 	    fi
-	
+
 done
