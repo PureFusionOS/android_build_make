@@ -1882,7 +1882,7 @@ do
 	esac
         if [ -d "$dirname" ]; then
 	name1=$dirname
-	echo "SDCLANG Founded: $dirname"
+	echo "SDCLANG Found: $dirname"
             export SDCLANG=true
             export SDCLANG_PATH=$dirname
             export SDCLANG_PATH2=$dirname
