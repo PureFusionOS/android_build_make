@@ -67,19 +67,11 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     dalvik.vm.dexopt.secondary=true \
     dalvik.vm.appimageformat=lz4
 
-# Different dexopt types for different package update/install times.
-# On eng builds, make "boot" reasons only extract for faster turnaround.
-ifeq (eng,$(TARGET_BUILD_VARIANT))
-    PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-        pm.dexopt.first-boot=extract \
-        pm.dexopt.boot=extract
-else
-    PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-        pm.dexopt.first-boot=quicken \
-        pm.dexopt.boot=verify
-endif
+# make "boot" reasons only extract for faster turnaround.
 
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    pm.dexopt.first-boot=extract \
+    pm.dexopt.boot=extract \
     pm.dexopt.install=quicken \
     pm.dexopt.bg-dexopt=speed-profile \
     pm.dexopt.ab-ota=speed-profile \
