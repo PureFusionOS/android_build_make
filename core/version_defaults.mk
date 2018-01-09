@@ -166,7 +166,7 @@ ifndef PLATFORM_SECURITY_PATCH
     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
 
-      PLATFORM_SECURITY_PATCH := 2017-12-01
+      PLATFORM_SECURITY_PATCH := 2018-01-05
 endif
 
 ifndef PLATFORM_BASE_OS
