@@ -2626,9 +2626,10 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
 
 CUSTOM_TARGET_PACKAGE := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-$(PLATFORM_VERSION)-$(shell date +%Y%m%d).zip
 
-.PHONY: otapackage bacon
+.PHONY: otapackage bacon pure
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
-bacon: otapackage
+bacon: pure
+pure: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CUSTOM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CUSTOM_TARGET_PACKAGE) > $(CUSTOM_TARGET_PACKAGE).md5sum
 	@echo "Package Complete: $(CUSTOM_TARGET_PACKAGE)"
