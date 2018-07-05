@@ -463,6 +463,24 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   device_specific.FullOTA_InstallBegin()
 
+  #Print ASCII
+## Acsii Art/Text has a Max width of 53 chars ##
+##             "12345678901234567890123456789012345678901234567890123"; Max Width##
+  script.Print("**************************************************");
+  script.Print("**    ___               ____         _          **");
+  script.Print("**   / _ \__ _________ / __/_ _____ (_)__  ___  **");
+  script.Print("**  / ___/ // / __/ -_) _// // (_-</ / _ \/ _ \ **");
+  script.Print("** /_/   \_,_/_/  \__/_/  \_,_/___/_/\___/_//_/ **");
+  script.Print("**                   ____  ____                 **");
+  script.Print("**                  / __ \/ __/                 **");
+  script.Print("**                 / /_/ /\ \                   **");
+  script.Print("**                 \____/___/                   **");
+  script.Print("**                                              **");
+  script.Print("**************************************************");
+  script.Print("*     (C) 2017 By: Eliminater74 and tabp0le      *");
+  script.Print("**************************************************");
+  script.Print(" ")
+  script.AppendExtra("sleep (3);")
   system_progress = 0.75
 
   if OPTIONS.wipe_user_data:
