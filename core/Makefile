@@ -1,5 +1,11 @@
 # Put some miscellaneous rules here
 
+# Colors for logo
+CL_GRN="\033[32m"
+CL_CYN="\033[36m"
+CL_BNK=""
+CL_RST="\033[0m"
+
 # HACK: clear LOCAL_PATH from including last build target before calling
 # intermedites-dir-for
 LOCAL_PATH := $(BUILD_SYSTEM)
